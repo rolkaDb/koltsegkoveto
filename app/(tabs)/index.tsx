@@ -7,6 +7,7 @@ import { BalanceHeader } from '../../components/BalanceHeader';
 import { BudgetCard } from '../../components/BudgetCard';
 import { EntryForm } from '../../components/EntryForm';
 import { EntryRow } from '../../components/EntryRow';
+import { GrowthCard } from '../../components/GrowthCard';
 import { MonthNav } from '../../components/MonthNav';
 import { Screen } from '../../components/Screen';
 import { StreakCard } from '../../components/StreakCard';
@@ -35,6 +36,7 @@ export default function HomeScreen() {
           <MonthNav />
           <BalanceHeader />
           <StreakCard />
+          <GrowthCard />
           <BudgetCard />
           <EntryForm />
 

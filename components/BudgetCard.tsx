@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
 
@@ -5,6 +6,7 @@ import { formatHuf } from '../lib/format';
 import { useApp, useThemedStyles } from '../lib/store';
 import { SERIF, type Theme } from '../lib/theme';
 import { Card } from './Card';
+import { InfoButton, InfoPanel, InfoStrong, InfoText } from './InfoButton';
 
 /**
  * Havi keret és a hozzá mért haladás.
@@ -16,6 +18,7 @@ export function BudgetCard() {
   const { settings, spent, theme } = useApp();
   const styles = useThemedStyles(makeStyles);
   const router = useRouter();
+  const [infoOpen, setInfoOpen] = useState(false);
 
   const budget = settings.monthlyBudget;
 
@@ -45,10 +48,15 @@ export function BudgetCard() {
     <View style={styles.wrap}>
       <Card style={styles.card}>
         <View style={styles.top}>
-          <Text style={styles.label}>Havi keret</Text>
+          <Text style={[styles.label, styles.flex]}>Havi keret</Text>
           <Text style={[styles.percent, over && { color: theme.negative }]}>
             {Math.round(share * 100)}%
           </Text>
+          <InfoButton
+            open={infoOpen}
+            onToggle={() => setInfoOpen((open) => !open)}
+            label="Hogyan számoljuk a keretet?"
+          />
         </View>
 
         <Text style={styles.amounts}>
@@ -75,6 +83,31 @@ export function BudgetCard() {
             ? `${formatHuf(-remaining)} túllépés`
             : `Még ${formatHuf(remaining)} fér bele`}
         </Text>
+
+        {infoOpen && (
+          <InfoPanel>
+            <InfoText>
+              A sáv az <InfoStrong>épp nézett hónap kiadásait</InfoStrong> méri a
+              kerethez. Ha korábbi hónapra lapozol, az annak az adatait mutatja.
+            </InfoText>
+
+            <InfoText>
+              A <InfoStrong>bevételek nem számítanak bele</InfoStrong> — ez
+              költési korlát, nem egyenleg. Attól, hogy jött egy fizetés, nem lesz
+              több hely a keretben.
+            </InfoText>
+
+            <InfoText>
+              A más pénznemű tételek a beállított árfolyammal, forintra váltva
+              szerepelnek benne.
+            </InfoText>
+
+            <InfoText>
+              Túllépés esetén csak jelzünk — <InfoStrong>semmi nem tiltódik le</InfoStrong>.
+              A keretet a Profil fülön módosíthatod.
+            </InfoText>
+          </InfoPanel>
+        )}
       </Card>
     </View>
   );
@@ -82,6 +115,7 @@ export function BudgetCard() {
 
 const makeStyles = (t: Theme) =>
   StyleSheet.create({
+    flex: { flex: 1 },
     pressed: { opacity: 0.7 },
     wrap: {
       paddingHorizontal: t.gap,
@@ -95,7 +129,7 @@ const makeStyles = (t: Theme) =>
     top: {
       flexDirection: 'row',
       alignItems: 'center',
-      justifyContent: 'space-between',
+      gap: 10,
     },
     label: {
       fontSize: 11,

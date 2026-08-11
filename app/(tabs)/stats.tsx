@@ -5,6 +5,7 @@ import type { Theme } from '../../lib/theme';
 import { BalanceHeader } from '../../components/BalanceHeader';
 import { CategoryBar } from '../../components/CategoryBar';
 import { EmptyState } from '../../components/EmptyState';
+import { IncomeExpenseChart } from '../../components/IncomeExpenseChart';
 import { MonthNav } from '../../components/MonthNav';
 import { Screen } from '../../components/Screen';
 
@@ -20,6 +21,7 @@ export default function StatsScreen() {
       >
         <MonthNav />
         <BalanceHeader />
+        <IncomeExpenseChart />
 
         {byCategory.length === 0 ? (
           <EmptyState

@@ -6,9 +6,11 @@ export const EXPENSE_CATEGORIES: Category[] = [
   { name: 'Élelmiszer', icon: '🛒', tint: '#FDE4EC' },
   { name: 'Étterem', icon: '🍽️', tint: '#FFEEDF' },
   { name: 'Közlekedés', icon: '🚌', tint: '#E6EFFA' },
+  { name: 'Utazás', icon: '✈️', tint: '#E2F0F6' },
   { name: 'Lakhatás', icon: '🏠', tint: '#ECE7FA' },
+  { name: 'Rezsi', icon: '💡', tint: '#FBF0D6' },
   { name: 'Szórakozás', icon: '🎬', tint: '#FCE6F4' },
-  { name: 'Egészség', icon: '🌿', tint: '#E4F3EA' },
+  { name: 'Egészség', icon: '💊', tint: '#E4F3EA' },
   { name: 'Egyéb', icon: '✨', tint: '#F2EFEA' },
 ];
 
