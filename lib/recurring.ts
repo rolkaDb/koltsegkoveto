@@ -11,6 +11,16 @@ function monthIndex(ref: MonthRef): number {
   return ref.year * 12 + ref.month;
 }
 
+/** Hónapkulcs a kihagyott hónapok nyilvántartásához: "2026-7". */
+export function monthKey(ref: MonthRef): string {
+  return `${ref.year}-${ref.month}`;
+}
+
+export function monthKeyOfDate(iso: string): string {
+  const d = new Date(iso);
+  return monthKey({ year: d.getFullYear(), month: d.getMonth() });
+}
+
 /**
  * Kiszámolja, mely tételek hiányoznak még az ismétlődő szabályokból.
  *
@@ -40,6 +50,9 @@ export function generateDueEntries(
       const year = Math.floor(idx / 12);
       const month = idx % 12;
       const ref = { year, month };
+
+      // A felhasználó szándékosan törölte vagy elmozgatta ezt a hónapot.
+      if (rule.skipped?.includes(monthKey(ref))) continue;
 
       const alreadyThere =
         entries.some((e) => e.recurringId === rule.id && isInMonth(e.date, ref)) ||

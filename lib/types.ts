@@ -37,4 +37,12 @@ export type Recurring = {
   start: MonthRef;
   /** Az utolsó hónap, vagy `null`, ha határozatlan. */
   end: MonthRef | null;
+  /**
+   * Hónapkulcsok ("2026-7"), amelyekre szándékosan nem generálunk.
+   *
+   * Ide kerül a hónap, ha a felhasználó törli az adott hónap tételét,
+   * vagy más hónapra mozgatja. Enélkül a generálás minden indításkor
+   * visszahozná, hiszen csak azt látja, hogy "ebben a hónapban nincs tétel".
+   */
+  skipped?: string[];
 };

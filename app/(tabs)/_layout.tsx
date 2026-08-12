@@ -4,19 +4,31 @@ import { Tabs } from 'expo-router';
 import { useTheme } from '../../lib/store';
 
 /**
+ * Ikonkomponens egy emojiból.
+ *
+ * Modulszinten hívjuk, nem a renderben: ha a komponens a render törzsében
+ * születne, minden témaváltáskor új típus lenne belőle, és a React
+ * lecserélné (unmount + mount) mind a négy ikont villogás árán.
+ */
+function makeIcon(glyph: string) {
+  const TabIcon = ({ color }: { color: string }) => (
+    <Text style={[styles.icon, { color }]}>{glyph}</Text>
+  );
+  TabIcon.displayName = `TabIcon(${glyph})`;
+  return TabIcon;
+}
+
+const HomeIcon = makeIcon('🏠');
+const EntriesIcon = makeIcon('🧾');
+const StatsIcon = makeIcon('📊');
+const ProfileIcon = makeIcon('👤');
+
+/**
  * Az alsó menüsáv. Az ikonok emojik - így nincs szükség külön
  * ikonkészletre, és minden készüléken egyformán jelennek meg.
  */
 export default function TabsLayout() {
   const theme = useTheme();
-
-  const icon = (glyph: string) => {
-    const TabIcon = ({ color }: { color: string }) => (
-      <Text style={[styles.icon, { color }]}>{glyph}</Text>
-    );
-    TabIcon.displayName = `TabIcon(${glyph})`;
-    return TabIcon;
-  };
 
   return (
     <Tabs
@@ -38,19 +50,19 @@ export default function TabsLayout() {
     >
       <Tabs.Screen
         name="index"
-        options={{ title: 'Kezdőlap', tabBarIcon: icon('🏠') }}
+        options={{ title: 'Kezdőlap', tabBarIcon: HomeIcon }}
       />
       <Tabs.Screen
         name="entries"
-        options={{ title: 'Tételek', tabBarIcon: icon('🧾') }}
+        options={{ title: 'Tételek', tabBarIcon: EntriesIcon }}
       />
       <Tabs.Screen
         name="stats"
-        options={{ title: 'Statisztika', tabBarIcon: icon('📊') }}
+        options={{ title: 'Statisztika', tabBarIcon: StatsIcon }}
       />
       <Tabs.Screen
         name="profile"
-        options={{ title: 'Profil', tabBarIcon: icon('👤') }}
+        options={{ title: 'Profil', tabBarIcon: ProfileIcon }}
       />
     </Tabs>
   );

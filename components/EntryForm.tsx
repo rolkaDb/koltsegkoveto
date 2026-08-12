@@ -4,7 +4,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 
 import { categoriesFor } from '../lib/categories';
 import { formatDateObj } from '../lib/format';
-import { BASE_CURRENCY, parseAmount } from '../lib/money';
+import { BASE_CURRENCY, parseAmount, roundForCurrency } from '../lib/money';
 import { useApp, useThemedStyles } from '../lib/store';
 import { SERIF, type Theme } from '../lib/theme';
 import type { EntryKind } from '../lib/types';
@@ -39,6 +39,19 @@ export function EntryForm() {
     setDate(isCurrent ? today : new Date(month.year, month.month, 1));
   }, [month.year, month.month]);
 
+  /**
+   * Ha a kiválasztott pénznemet közben törölték a beállításokból, essünk
+   * vissza forintra. Enélkül a tétel egy árfolyam nélküli kóddal jönne
+   * létre, és 1:1 arányban számítana bele az összesítésbe.
+   */
+  useEffect(() => {
+    const known =
+      currency === BASE_CURRENCY ||
+      settings.currencies.some((c) => c.code === currency);
+
+    if (!known) setCurrency(BASE_CURRENCY);
+  }, [settings.currencies, currency]);
+
   const parsedAmount = parseAmount(amount);
   const canAdd = parsedAmount !== null;
   const isIncome = kind === 'income';
@@ -57,7 +70,7 @@ export function EntryForm() {
     if (parsedAmount === null) return;
 
     addEntry({
-      amount: parsedAmount,
+      amount: roundForCurrency(parsedAmount, currency),
       category,
       note: note.trim(),
       date: date.toISOString(),

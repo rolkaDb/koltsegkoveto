@@ -56,7 +56,9 @@ export function normalizeEntries(raw: unknown): Entry[] {
         : {}),
       ...(typeof e.recurringId === 'string' ? { recurringId: e.recurringId } : {}),
     }))
-    .filter((e) => e.amount > 0);
+    // Az érvénytelen dátumú tétel egyetlen hónapban sem jelenne meg, de ott
+    // ülne a tárolóban és a számlálókban - jobb, ha ki sem kerül a listába.
+    .filter((e) => e.amount > 0 && !Number.isNaN(new Date(e.date).getTime()));
 }
 
 /** Ugyanaz az elv, mint a tételeknél: sérült szabály essen ki, ne döntsön el mindent. */
@@ -75,7 +77,7 @@ export function normalizeRecurring(raw: unknown): Recurring[] {
 
   return raw
     .filter((r): r is Record<string, unknown> => !!r && typeof r === 'object')
-    .map((r) => {
+    .map((r): Recurring | null => {
       const start = asMonth(r.start);
       if (!start) return null;
 
@@ -88,6 +90,9 @@ export function normalizeRecurring(raw: unknown): Recurring[] {
         dayOfMonth: Math.min(Math.max(Number(r.dayOfMonth) || 1, 1), 31),
         start,
         end: asMonth(r.end),
+        skipped: Array.isArray(r.skipped)
+          ? r.skipped.filter((s: unknown): s is string => typeof s === 'string')
+          : [],
       };
     })
     .filter((r): r is Recurring => r !== null && r.amount > 0);

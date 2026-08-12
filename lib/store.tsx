@@ -25,7 +25,7 @@ import {
   type Settings,
 } from './storage';
 import { BASE_CURRENCY, toBase } from './money';
-import { generateDueEntries } from './recurring';
+import { generateDueEntries, monthKeyOfDate } from './recurring';
 import { computeStreak, type Streak } from './streak';
 import { buildTheme, type Intensity, type Theme } from './theme';
 import type { Entry, MonthRef, Recurring } from './types';
@@ -174,18 +174,57 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setMonth({ year: d.getFullYear(), month: d.getMonth() });
   }, []);
 
+  /**
+   * Egy ismétlődő szabályból származó hónapot kihagyottnak jelöl.
+   *
+   * Enélkül a generálás minden appindításkor visszahozná a tételt: csak
+   * azt látja, hogy abban a hónapban nincs az adott szabályból semmi -
+   * azt nem, hogy ez szándékos volt.
+   */
+  const markSkipped = useCallback((recurringId: string, iso: string) => {
+    const key = monthKeyOfDate(iso);
+
+    setRecurring((prev) =>
+      prev.map((r) =>
+        r.id === recurringId && !r.skipped?.includes(key)
+          ? { ...r, skipped: [...(r.skipped ?? []), key] }
+          : r
+      )
+    );
+  }, []);
+
   const updateEntry = useCallback(
     (id: string, patch: Partial<Omit<Entry, 'id'>>) => {
+      const target = entries.find((e) => e.id === id);
+
+      // Ha egy generált tételt más hónapra mozgatnak, az eredeti hónap
+      // kihagyottá válik - különben oda újragenerálódna egy másolat.
+      if (
+        target?.recurringId &&
+        patch.date &&
+        monthKeyOfDate(patch.date) !== monthKeyOfDate(target.date)
+      ) {
+        markSkipped(target.recurringId, target.date);
+      }
+
       setEntries((prev) =>
         prev.map((e) => (e.id === id ? { ...e, ...patch } : e))
       );
     },
-    []
+    [entries, markSkipped]
   );
 
-  const removeEntry = useCallback((id: string) => {
-    setEntries((prev) => prev.filter((e) => e.id !== id));
-  }, []);
+  const removeEntry = useCallback(
+    (id: string) => {
+      const target = entries.find((e) => e.id === id);
+      if (target?.recurringId) {
+        markSkipped(target.recurringId, target.date);
+      }
+
+      setEntries((prev) => prev.filter((e) => e.id !== id));
+    },
+    [entries, markSkipped]
+  );
 
   const setPalette = useCallback((palette: string) => {
     setAppearance((prev) => ({ ...prev, palette }));

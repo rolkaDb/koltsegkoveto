@@ -15,7 +15,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 
 import { categoriesFor } from '../../lib/categories';
 import { formatDateObj } from '../../lib/format';
-import { BASE_CURRENCY, parseAmount } from '../../lib/money';
+import { BASE_CURRENCY, parseAmount, roundForCurrency } from '../../lib/money';
 import { useApp, useThemedStyles } from '../../lib/store';
 import { SERIF, type Theme } from '../../lib/theme';
 import type { EntryKind } from '../../lib/types';
@@ -54,6 +54,18 @@ export default function EditEntryScreen() {
     setNote(entry.note);
     setDate(new Date(entry.date));
   }, [entry?.id]);
+
+  /**
+   * Ha a tétel pénznemét időközben törölték a beállításokból, essünk
+   * vissza forintra - különben árfolyam nélküli kóddal mentenénk vissza.
+   */
+  useEffect(() => {
+    const known =
+      currency === BASE_CURRENCY ||
+      settings.currencies.some((c) => c.code === currency);
+
+    if (!known) setCurrency(BASE_CURRENCY);
+  }, [settings.currencies, currency]);
 
   if (!entry) {
     return (
@@ -101,7 +113,7 @@ export default function EditEntryScreen() {
     if (!changed || parsed === null) return;
 
     updateEntry(entry!.id, {
-      amount: parsed,
+      amount: roundForCurrency(parsed, currency),
       kind,
       category,
       note: note.trim(),

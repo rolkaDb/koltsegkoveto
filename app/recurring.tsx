@@ -13,6 +13,7 @@ import { useRouter } from 'expo-router';
 
 import { categoriesFor, categoryOf } from '../lib/categories';
 import { currentMonth, formatHuf, monthTitle } from '../lib/format';
+import { BASE_CURRENCY, roundForCurrency } from '../lib/money';
 import { useApp, useThemedStyles } from '../lib/store';
 import { SERIF, type Theme } from '../lib/theme';
 import type { EntryKind } from '../lib/types';
@@ -48,7 +49,8 @@ export default function RecurringScreen() {
     if (!canAdd) return;
 
     addRecurring({
-      amount: parsed,
+      // Az ismétlődő tételek mindig forintosak, ezért egészre kerekítünk.
+      amount: roundForCurrency(parsed, BASE_CURRENCY),
       category,
       note: note.trim(),
       kind,

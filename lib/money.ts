@@ -55,6 +55,18 @@ export function parseAmount(text: string): number | null {
   return value > 0 ? value : null;
 }
 
+/**
+ * Az adott pénznemben értelmes pontosságra kerekít.
+ *
+ * Ezt mentés előtt kell futtatni. Enélkül forintnál eltérne a tárolt és a
+ * megjelenített érték: két 100,50-es tétel külön-külön "101 Ft"-nak látszana,
+ * az összegük viszont 201 Ft lenne - a felhasználó szemével 202 helyett.
+ */
+export function roundForCurrency(amount: number, code: string): number {
+  const factor = 10 ** decimalsFor(code);
+  return Math.round(amount * factor) / factor;
+}
+
 /** ISO 4217 kód ellenőrzése: pontosan három nagybetű. */
 export function isValidCode(code: string): boolean {
   return /^[A-Z]{3}$/.test(code);
