@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "koltsegkoveto",
+    "name": "Költségvető",
     "slug": "koltsegkoveto",
     "version": "1.0.0",
     "scheme": "koltsegkoveto",
@@ -11,6 +11,7 @@
       "supportsTablet": true
     },
     "android": {
+      "package": "com.rolkadb.koltsegkoveto",
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/android-icon-foreground.png",
@@ -26,6 +27,13 @@
       "@react-native-community/datetimepicker",
       "expo-font",
       "expo-router"
-    ]
+    ],
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "cfc876f5-649d-435b-8137-143ad2e09a3a"
+      }
+    },
+    "owner": "rolkadb"
   }
 }
