@@ -52,7 +52,7 @@ export async function exportBackup(data: BackupData): Promise<string | null> {
     ...data,
   };
 
-  const name = `penztarca-mentes-${dayKey(new Date())}.json`;
+  const name = `koltsegveto-mentes-${dayKey(new Date())}.json`;
   const file = new File(Paths.cache, name);
 
   if (file.exists) file.delete();
@@ -64,7 +64,7 @@ export async function exportBackup(data: BackupData): Promise<string | null> {
   await Sharing.shareAsync(file.uri, {
     mimeType: 'application/json',
     UTI: 'public.json',
-    dialogTitle: 'Pénztárca mentés',
+    dialogTitle: 'Költségvető mentés',
   });
 
   return name;
@@ -99,7 +99,7 @@ export async function importBackup(): Promise<BackupData | null> {
 
   const raw = parsed as Record<string, unknown> | null;
   if (!raw || raw.app !== 'koltsegkoveto') {
-    throw new BackupError('Ez nem a Pénztárca mentésfájlja.');
+    throw new BackupError('Ez nem a Költségvető mentésfájlja.');
   }
 
   const entries = normalizeEntries(raw.entries);

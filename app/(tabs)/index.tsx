@@ -23,7 +23,7 @@ export default function HomeScreen() {
   const recent = monthEntries.slice(0, RECENT_COUNT);
 
   return (
-    <Screen title="Pénztárca">
+    <Screen title="Költségvető">
       {/*
         A `padding` viselkedés Androidon is kell, nem csak iOS-en.
         Régen elég volt az Androidra bízni: a rendszer átméretezte az
