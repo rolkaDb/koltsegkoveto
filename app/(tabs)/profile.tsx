@@ -1,6 +1,5 @@
 import {
   KeyboardAvoidingView,
-  Platform,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -27,10 +26,8 @@ export default function ProfileScreen() {
 
   return (
     <Screen title="Profil">
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        style={styles.flex}
-      >
+      {/* Androidon is `padding` kell - lásd a kezdőlap magyarázatát. */}
+      <KeyboardAvoidingView behavior="padding" style={styles.flex}>
       <ScrollView
         contentContainerStyle={styles.content}
         keyboardShouldPersistTaps="handled"

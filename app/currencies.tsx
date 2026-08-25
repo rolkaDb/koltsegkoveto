@@ -2,7 +2,6 @@ import { useState } from 'react';
 import {
   Alert,
   KeyboardAvoidingView,
-  Platform,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -69,10 +68,8 @@ export default function CurrenciesScreen() {
 
   return (
     <Screen>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        style={styles.flex}
-      >
+      {/* Androidon is `padding` kell - lásd a kezdőlap magyarázatát. */}
+      <KeyboardAvoidingView behavior="padding" style={styles.flex}>
         <View style={styles.header}>
           <Pressable
             onPress={() => router.back()}

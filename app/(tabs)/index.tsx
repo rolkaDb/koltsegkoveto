@@ -1,4 +1,4 @@
-import { KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { KeyboardAvoidingView, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
 
 import { useApp, useThemedStyles } from '../../lib/store';
@@ -24,10 +24,15 @@ export default function HomeScreen() {
 
   return (
     <Screen title="Pénztárca">
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        style={styles.flex}
-      >
+      {/*
+        A `padding` viselkedés Androidon is kell, nem csak iOS-en.
+        Régen elég volt az Androidra bízni: a rendszer átméretezte az
+        ablakot a billentyűzet fölé, és a görgethető tartalom magától
+        feljebb csúszott. Az Android 15 „széltől szélig" módjában
+        viszont az ablak már nem méreteződik át, így a billentyűzet
+        ráborult a megjegyzés mezőre.
+      */}
+      <KeyboardAvoidingView behavior="padding" style={styles.flex}>
         <ScrollView
           contentContainerStyle={styles.content}
           keyboardShouldPersistTaps="handled"
