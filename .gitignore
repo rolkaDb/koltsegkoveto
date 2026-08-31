@@ -39,3 +39,8 @@ yarn-error.*
 # generated native folders
 /ios
 /android
+
+# letöltött buildek (az EAS tárolja őket, nem a repó)
+build/
+*.aab
+*.apk
